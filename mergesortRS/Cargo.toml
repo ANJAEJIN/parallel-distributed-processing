@@ -1,0 +1,7 @@
+[package]
+name = "mergesortRS"
+version = "0.1.0"
+authors = ["AN JAEJIN <e175731@ie.u-ryukyu.ac.jp>"]
+edition = "2018"
+
+[dependencies]
