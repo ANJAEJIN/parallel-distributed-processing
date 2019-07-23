@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"os"
+	"runtime"
 	"strconv"
 	"strings"
 	"time"
@@ -12,30 +14,50 @@ func main() {
 	dat, err := ioutil.ReadFile("./random.txt")
 	check(err)
 	slice := make([]int, 1000000)
-	s := strings.Split(string(dat),"\n")
-	for i:= 0;i < len(s)-1 ; i++ {
-		slice[i],err = strconv.Atoi(s[i])
+	s := strings.Split(string(dat), "\n")
+	for i := 0; i < len(s)-1; i++ {
+		slice[i], err = strconv.Atoi(s[i])
 		check(err)
 	}
 
+	var d1 = ""
+	for k := 0; k < runtime.NumCPU(); k++ {
+		runtime.GOMAXPROCS(k) // CPU 개수를 구한 뒤 사용할 최대 CPU 개수 설정
 
-	startTime := time.Now()
-	result := make(chan []int)
-	go MergeSort(slice, result)
-	r := <- result
-	elapsedTime := time.Since(startTime)
-	fmt.Printf("run time: %s\n", elapsedTime)
+		fmt.Println(runtime.GOMAXPROCS(0)) // 설정 값 출력
 
+		startTime := time.Now()
+		result := make(chan []int)
+		go MergeSort(slice, result)
+		r := <-result
+		elapsedTime := time.Since(startTime)
+		fmt.Printf("run time: %s\n", elapsedTime)
 
-	fmt.Println("\n--- Unsorted --- \n\n", slice[0:10])
-	fmt.Println("\n--- Sorted ---\n\n", r[0:100], "\n")
+		d1 = strings.Join([]string{d1, strconv.Itoa(runtime.GOMAXPROCS(0)), elapsedTime.String()[0 : len(elapsedTime.String())-2], "\n"}, " ")
+
+		fmt.Println("\n--- Unsorted --- \n\n", slice[0:10])
+		fmt.Println("\n--- Sorted ---\n\n", r[0:10], "\n")
+	}
+	fmt.Println(d1)
+
+	fo, err := os.Create("./dat1.txt")
+	if err != nil {
+		panic(err)
+	}
+	defer fo.Close()
+	d2 := []byte(d1)
+	_, err = fo.Write(d2)
+	if err != nil {
+		panic(err)
+	}
+
 }
 
 func Merge(ldata []int, rdata []int) (result []int) {
-	result = make([]int, len(ldata) + len(rdata))
+	result = make([]int, len(ldata)+len(rdata))
 	lidx, ridx := 0, 0
 
-	for i:=0;i<cap(result);i++ {
+	for i := 0; i < cap(result); i++ {
 		switch {
 		case lidx >= len(ldata):
 			result[i] = rdata[ridx]
@@ -61,9 +83,9 @@ func MergeSort(data []int, r chan []int) {
 		return
 	}
 
-	if len(data)<=1000 {
+	if len(data) <= 1000 {
 		r <- mergeSort(data)
-	}else {
+	} else {
 		leftChan := make(chan []int)
 		rightChan := make(chan []int)
 		middle := len(data) / 2
@@ -84,8 +106,6 @@ func MergeSort(data []int, r chan []int) {
 		r <- Merge(ldata, rdata)
 	}
 
-
-
 	return
 }
 
@@ -94,7 +114,6 @@ func check(e error) {
 		panic(e)
 	}
 }
-
 
 func mergeSort(items []int) []int {
 	var num = len(items)
@@ -105,7 +124,7 @@ func mergeSort(items []int) []int {
 
 	middle := int(num / 2)
 	var (
-		left = make([]int, middle)
+		left  = make([]int, middle)
 		right = make([]int, num-middle)
 	)
 	for i := 0; i < num; i++ {
@@ -120,7 +139,7 @@ func mergeSort(items []int) []int {
 }
 
 func merge(left, right []int) (result []int) {
-	result = make([]int, len(left) + len(right))
+	result = make([]int, len(left)+len(right))
 
 	i := 0
 	for len(left) > 0 && len(right) > 0 {

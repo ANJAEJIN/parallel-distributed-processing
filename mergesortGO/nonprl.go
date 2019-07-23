@@ -6,15 +6,15 @@ import (
 	"strconv"
 	"strings"
 	"time"
-);
+)
 
 func main() {
 	dat, err := ioutil.ReadFile("./random.txt")
 	check(err)
 	slice := make([]int, 1000000)
-	s := strings.Split(string(dat),"\n")
-	for i:= 0;i < len(s)-1 ; i++ {
-		slice[i],err = strconv.Atoi(s[i])
+	s := strings.Split(string(dat), "\n")
+	for i := 0; i < len(s)-1; i++ {
+		slice[i], err = strconv.Atoi(s[i])
 		check(err)
 	}
 
@@ -22,7 +22,6 @@ func main() {
 	result := mergeSort(slice)
 	elapsedTime := time.Since(startTime)
 	fmt.Printf("run time: %s\n", elapsedTime)
-
 
 	fmt.Println("\n--- Unsorted --- \n\n", slice[0:10])
 	fmt.Println("\n--- Sorted ---\n\n", result[0:10], "\n")
@@ -37,7 +36,7 @@ func mergeSort(items []int) []int {
 
 	middle := int(num / 2)
 	var (
-		left = make([]int, middle)
+		left  = make([]int, middle)
 		right = make([]int, num-middle)
 	)
 	for i := 0; i < num; i++ {
@@ -52,7 +51,7 @@ func mergeSort(items []int) []int {
 }
 
 func merge(left, right []int) (result []int) {
-	result = make([]int, len(left) + len(right))
+	result = make([]int, len(left)+len(right))
 
 	i := 0
 	for len(left) > 0 && len(right) > 0 {
