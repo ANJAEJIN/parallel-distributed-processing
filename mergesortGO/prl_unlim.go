@@ -14,7 +14,7 @@ func main() {
 	check(err)
 	slice := make([]int, 1000000)
 	s := strings.Split(string(dat), "\n")
-	for i := 0; i < len(s)-1; i++ {
+	for i := 0; i < len(s); i++ {
 		slice[i], err = strconv.Atoi(s[i])
 		check(err)
 	}

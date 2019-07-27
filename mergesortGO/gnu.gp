@@ -4,7 +4,7 @@ set output "gnu.png"
 set title "runtime, CPU#"
 set xlabel "CPU#"
 set ylabel "runtime"
-set xrange[0:12]
-set yrange[40:210]
-plot "dat1.txt" t "" w p
+set xrange[0:13]
+set yrange[160:780]
+plot "dat1.txt" t "" w l
 set term aqua

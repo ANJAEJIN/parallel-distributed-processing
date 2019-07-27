@@ -21,7 +21,7 @@ func main() {
 	}
 
 	var d1 = ""
-	for k := 0; k < runtime.NumCPU(); k++ {
+	for k := 1; k <= runtime.NumCPU(); k++ {
 		runtime.GOMAXPROCS(k) // CPU 개수를 구한 뒤 사용할 최대 CPU 개수 설정
 
 		fmt.Println(runtime.GOMAXPROCS(0)) // 설정 값 출력
